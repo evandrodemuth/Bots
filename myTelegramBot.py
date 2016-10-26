@@ -26,8 +26,6 @@ def handle(msg):
       	 bot.sendMessage(chat_id, cp.runAndReturn(cp.getCommand("load")))
     elif command == '/ip':
          bot.sendMessage(chat_id, cp.runAndReturn(cp.getCommand("publicIP")))
-    elif command == '/zemuniz':
-  	bot.sendMessage(chat_id, 'Um musico brasileiro porreta!')
 
 
 
