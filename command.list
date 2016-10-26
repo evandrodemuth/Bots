@@ -1,0 +1,3 @@
+list:ls -lhtr
+load:uptime
+publicIP:/home/pi/iot/telegram/ip.sh
