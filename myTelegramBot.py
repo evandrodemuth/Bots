@@ -33,7 +33,7 @@ def handle(msg):
 
 
 cp = CommandParser()
-bot = telepot.Bot('250247563:AAFkUm0262nysZhMHjPv4IoR5ro46GeZ3Kc')
+bot = telepot.Bot('<<your Telegram Bot token>>')
 bot.message_loop(handle)
 print 'I am listening ...'
 
