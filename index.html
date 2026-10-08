@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesquisa de Mercado: Moto do Evandro</title>
+<style>
+  :root {
+    --bg: #f4f7f6; --card: #fff; --ink: #2c3e50; --muted: #7f8c8d;
+    --accent: #2980b9; --accent-2: #3498db; --line: #e3e8ea; --good: #27ae60;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; background: var(--bg); color: #333; }
+  header.hero { background: linear-gradient(135deg, #2c3e50, #2980b9); color: #fff; text-align: center; padding: 48px 20px 40px; }
+  header.hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 4vw, 2.4rem); }
+  header.hero p { margin: 0; opacity: .85; }
+  .container { max-width: 1150px; margin: -24px auto 40px; background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,.1); }
+  h2 { color: var(--accent); margin: 40px 0 16px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+  h2:first-child { margin-top: 0; }
+
+  /* Galeria */
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 22px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.05); display: flex; flex-direction: column; transition: transform .25s, box-shadow .25s; }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,.12); }
+  .photo { position: relative; height: 220px; background: linear-gradient(135deg, #dfe6e9, #b2bec3); overflow: hidden; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo .fallback { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: #636e72; font-size: .9rem; text-align: center; padding: 10px; }
+  .photo.no-img .fallback { display: flex; }
+  .photo.no-img img { display: none; }
+  .fallback svg { width: 90px; height: 60px; fill: none; stroke: #636e72; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .fallback a { color: var(--accent); font-weight: 600; }
+  .badge { position: absolute; top: 10px; left: 10px; background: var(--good); color: #fff; font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; z-index: 1; }
+  .card-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .card h3 { margin: 0; font-size: 1.2rem; color: #34495e; }
+  .tag { font-size: .8rem; color: var(--muted); margin: -4px 0 0; }
+  .stats { display: flex; gap: 10px; margin-top: 4px; }
+  .stat { flex: 1; background: #f1f6f9; border-radius: 8px; padding: 8px 10px; }
+  .stat small { display: block; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .03em; }
+  .stat strong { font-size: .98rem; color: var(--ink); }
+  .card ul { margin: 6px 0 0; padding-left: 18px; font-size: .88rem; color: #555; }
+  .photo-credit { font-size: .72rem; color: var(--muted); margin-top: auto; padding-top: 8px; }
+  .photo-credit a { color: var(--muted); }
+
+  /* Tabela */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .95rem; min-width: 720px; }
+  th, td { border: 1px solid #ddd; padding: 12px 15px; text-align: left; vertical-align: top; }
+  th { background: var(--ink); color: #fff; text-transform: uppercase; font-size: .82rem; }
+  tr:nth-child(even) { background: #f9f9f9; }
+  tr:hover { background: #f1f1f1; }
+  td.thumb { width: 90px; padding: 6px; }
+  td.thumb img { width: 80px; height: 54px; object-fit: cover; border-radius: 6px; display: block; background: #dfe6e9; }
+
+  /* Gráfico de seguro */
+  .bars { display: grid; gap: 10px; }
+  .bar-row { display: grid; grid-template-columns: 190px 1fr; gap: 12px; align-items: center; font-size: .9rem; }
+  .bar-track { position: relative; height: 24px; background: #eef2f4; border-radius: 6px; }
+  .bar-fill { position: absolute; top: 0; bottom: 0; background: linear-gradient(90deg, var(--accent-2), var(--accent)); border-radius: 6px; }
+  .bar-label { position: absolute; right: 8px; top: 0; line-height: 24px; font-size: .78rem; color: var(--ink); font-weight: 600; }
+  .legend { font-size: .8rem; color: var(--muted); margin-top: 8px; }
+
+  /* Análise */
+  .analise-box { background: #e8f4f8; padding: 18px 22px; border-left: 5px solid var(--accent-2); margin-bottom: 18px; border-radius: 0 8px 8px 0; }
+  .analise-box h3 { margin: 0 0 6px; color: var(--ink); }
+  .analise-box p { margin: 0; }
+  .nota { font-size: .85rem; color: var(--muted); font-style: italic; text-align: right; }
+  footer { text-align: center; color: var(--muted); font-size: .8rem; padding-bottom: 30px; }
+
+  @media (max-width: 600px) {
+    .container { padding: 18px; margin-top: -16px; border-radius: 10px; }
+    .bar-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>🏍️ Pesquisa de Mercado: Moto do Evandro</h1>
+  <p>Aventureiras de média cilindrada · preço, tecnologia, seguro e custo-benefício</p>
+</header>
+
+<div class="container">
+
+  <h2>1. Galeria de Modelos</h2>
+  <div class="gallery" id="gallery"></div>
+
+  <h2>2. Tabela Comparativa de Preços e Seguro</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Foto</th><th>Modelo</th><th>Preço Aprox. (Zero KM)</th><th>Tecnologia e Segurança</th><th>Seguro Anual Estimado</th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <p class="nota">*Nota: Os preços das motos e dos seguros variam conforme a região do Brasil, perfil do condutor, uso diário e CEP de pernoite.</p>
+
+  <h2>3. Seguro Anual: Comparação Visual</h2>
+  <div class="bars" id="bars"></div>
+  <p class="legend">A barra mostra a faixa estimada (mínimo a máximo) numa escala de R$ 0 a R$ 3.500.</p>
+
+  <h2>4. Análise de Custo-Benefício</h2>
+  <div class="analise-box">
+    <h3>🏆 A Melhor Opção Geral: Royal Enfield Himalayan 450</h3>
+    <p>Para quem foca no menor custo de propriedade, a Himalayan 450 é imbatível. Ela traz tecnologias presentes em motos de categorias superiores (como o painel TFT com espelhamento nativo do Google Maps), é excelente para viagens e off-road, e possui o <strong>seguro mais barato da lista</strong> (média de R$ 1.100 a R$ 1.500 ao ano), o que reduz drasticamente seus gastos a longo prazo.</p>
+  </div>
+  <div class="analise-box">
+    <h3>🏙️ A Mais Racional e Urbana: Triumph Scrambler 400 X</h3>
+    <p>Se o seu uso for mais focado em asfalto e locomoção diária com viagens curtas, a Scrambler 400 X entrega um acabamento premium, motor ágil de 40 cv e um pacote de segurança honesto por um dos menores preços de aquisição (R$ 34.490), além de manter um seguro relativamente acessível por não ser um modelo tão visado.</p>
+  </div>
+  <div class="analise-box">
+    <h3>⚙️ O Melhor Motor Bicilíndrico: CFMOTO Ibex 450</h3>
+    <p>Caso você faça questão de um motor de dois cilindros (que entrega um funcionamento mais suave em rodovias) sem pagar o preço elevado da Honda, a Ibex 450 é uma excelente escolha. Ela oferece suspensões totalmente ajustáveis e aros raiados, com um seguro que parte de valores justos.</p>
+  </div>
+  <div class="analise-box">
+    <h3>🛡️ A Escolha Segura e Conservadora: Honda NX 500</h3>
+    <p>A NX 500 tem o motor mais testado do mercado, a maior rede de assistência e altíssima liquidez na hora da revenda. O grande pênalti no custo-benefício é o preço de compra elevado e o seguro consideravelmente mais caro, puxado pelo alto índice de roubo histórico das motos de 500cc da marca.</p>
+  </div>
+</div>
+
+<footer>Fotos: Wikimedia Commons (licenças livres). Valores aproximados, sujeitos a variação.</footer>
+
+<script>
+  // Fotos vêm do Wikimedia Commons (Special:FilePath redireciona para o arquivo).
+  // Se um arquivo não existir ou falhar, aparece um quadro com link para buscar fotos.
+  const commons = f => "https://commons.wikimedia.org/wiki/Special:FilePath/" + f + "?width=800";
+  const motos = [
+    { nome: "Honda NX 500", tag: "Bicilíndrica · Honda", file: "2026_Honda_NX500_E-Clutch.jpg",
+      preco: "R$ 38.000", precoN: 38000, seg: [2300, 3500],
+      tec: "ABS de 2 canais, controle de tração (HSTC), painel TFT de 5\", embreagem deslizante, iluminação Full LED.",
+      pontos: ["Motor mais testado do mercado", "Maior rede de assistência", "Alta liquidez na revenda"] },
+    { nome: "CFMOTO Ibex 450", tag: "Bicilíndrica · CFMOTO", file: "CFMOTO_450MT.jpg",
+      preco: "R$ 35.990", precoN: 35990, seg: [1400, 2800],
+      tec: "ABS de 2 canais (desligável na traseira), controle de tração, painel TFT com Bluetooth, suspensão ajustável (KYB).",
+      pontos: ["Motor de dois cilindros", "Suspensões totalmente ajustáveis", "Aros raiados"] },
+    { nome: "Royal Enfield Himalayan 450", tag: "Monocilíndrica · Royal Enfield", file: "Royal_Enfield_Himalayan_450.jpg",
+      preco: "R$ 34.990", precoN: 34990, seg: [1100, 1500], destaque: "Melhor custo-benefício",
+      tec: "Acelerador eletrônico, modos de pilotagem, ABS comutável, painel TFT circular com Google Maps integrado.",
+      pontos: ["Seguro mais barato da lista", "Ótima para viagens e off-road", "Google Maps nativo no painel"] },
+    { nome: "Triumph Scrambler 400 X", tag: "Monocilíndrica · Triumph", file: "Triumph_Scrambler_400_X.jpg",
+      preco: "R$ 34.490", precoN: 34490, seg: [1500, 2200],
+      tec: "Acelerador eletrônico, controle de tração comutável, ABS desligável na traseira, embreagem assistida.",
+      pontos: ["Menor preço de aquisição", "Acabamento premium", "Motor ágil de 40 cv"] },
+    { nome: "KTM 390 Adventure", tag: "Monocilíndrica · KTM", file: "KTM_390_Adventure_2020.jpg",
+      preco: "R$ 39.990", precoN: 39990, seg: [2000, 3000],
+      tec: "ABS de curva (Cornering ABS), controle de tração sensível à inclinação, painel TFT, suspensão WP ajustável.",
+      pontos: ["Pacote eletrônico mais completo", "Suspensão WP ajustável", "Foco em off-road"] },
+    { nome: "BMW G 310 GS", tag: "Monocilíndrica · BMW", file: "BMW_G310GS.jpg",
+      preco: "R$ 39.900", precoN: 39900, seg: [1300, 2500],
+      tec: "ABS de 2 canais, embreagem deslizante, acelerador eletrônico, iluminação Full LED, painel LCD.",
+      pontos: ["Marca premium", "Seguro competitivo", "Visual de GS clássica"] }
+  ];
+
+  const brl = n => "R$ " + n.toLocaleString("pt-BR");
+  const searchUrl = m => "https://www.google.com/search?tbm=isch&q=" + encodeURIComponent(m.nome + " moto");
+  const bikeSvg = '<svg viewBox="0 0 90 60"><circle cx="18" cy="42" r="12"/><circle cx="72" cy="42" r="12"/><path d="M18 42 L34 22 H50 L72 42 M34 22 L40 12 H50 M50 22 L42 42 H30"/></svg>';
+
+  // Se a imagem falhar, mostra o quadro substituto
+  window.imgFail = el => el.closest(".photo, td")?.classList.add("no-img");
+  const imgFailThumb = el => { el.style.visibility = "hidden"; };
+
+  document.getElementById("gallery").innerHTML = motos.map(m => `
+    <article class="card">
+      <div class="photo">
+        ${m.destaque ? `<span class="badge">🏆 ${m.destaque}</span>` : ""}
+        <img src="${commons(m.file)}" alt="${m.nome}" loading="lazy" referrerpolicy="no-referrer" onerror="imgFail(this)">
+        <div class="fallback">${bikeSvg}<span>Foto indisponível</span><a href="${searchUrl(m)}" target="_blank" rel="noopener">Buscar fotos da ${m.nome} ↗</a></div>
+      </div>
+      <div class="card-body">
+        <h3>${m.nome}</h3>
+        <p class="tag">${m.tag}</p>
+        <div class="stats">
+          <div class="stat"><small>Preço zero km</small><strong>${m.preco}</strong></div>
+          <div class="stat"><small>Seguro / ano</small><strong>${brl(m.seg[0])} – ${brl(m.seg[1])}</strong></div>
+        </div>
+        <ul>${m.pontos.map(p => `<li>${p}</li>`).join("")}</ul>
+        <p class="photo-credit">Foto: Wikimedia Commons · <a href="${searchUrl(m)}" target="_blank" rel="noopener">mais fotos</a></p>
+      </div>
+    </article>`).join("");
+
+  document.getElementById("tbody").innerHTML = motos.map(m => `
+    <tr>
+      <td class="thumb"><img src="${commons(m.file)}" alt="${m.nome}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'"></td>
+      <td><strong>${m.nome}</strong></td>
+      <td>${m.preco}</td>
+      <td>${m.tec}</td>
+      <td>${brl(m.seg[0])} – ${brl(m.seg[1])}</td>
+    </tr>`).join("");
+
+  const MAX = 3500;
+  document.getElementById("bars").innerHTML = [...motos].sort((a, b) => a.seg[0] - b.seg[0]).map(m => `
+    <div class="bar-row">
+      <span>${m.nome}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="left:${m.seg[0] / MAX * 100}%; width:${(m.seg[1] - m.seg[0]) / MAX * 100}%"></div>
+        <span class="bar-label">${brl(m.seg[0])} – ${brl(m.seg[1])}</span>
+      </div>
+    </div>`).join("");
+</script>
+</body>
+</html>
